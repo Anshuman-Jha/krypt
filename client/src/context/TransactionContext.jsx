@@ -59,6 +59,20 @@ export const TransactionsProvider = ({ children }) => {
 
       const accounts = await ethereum.request({ method: "eth_accounts" });
 
+      const chainId = await ethereum.request({ method: "eth_chainId" });
+      if (chainId !== "0xaa36a7") {
+        if (window.confirm("You are connected to the wrong network. Would you like to switch to the Sepolia Testnet?")) {
+          try {
+            await ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0xaa36a7' }],
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+
       if (accounts.length) {
         setCurrentAccount(accounts[0]);
 
